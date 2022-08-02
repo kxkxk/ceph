@@ -90,6 +90,7 @@ Changelog
 * mgr/telemetry: fix waiting for mgr to warm up (`pr#45772 <https://github.com/ceph/ceph/pull/45772>`_, Yaarit Hatuka)
 * mgr/volumes: A few volumes plugin backport (`issue#51271 <http://tracker.ceph.com/issues/51271>`_, `pr#44800 <https://github.com/ceph/ceph/pull/44800>`_, Kotresh HR, Venky Shankar, Jan Fajerski)
 * mgr/volumes: Fix permission during subvol creation with mode (`pr#43224 <https://github.com/ceph/ceph/pull/43224>`_, Kotresh HR)
+* mgr/volumes: Fix subvolume discover during upgrade (`pr#47236 <https://github.com/ceph/ceph/pull/47236>`_, Kotresh HR)
 * mgr: limit changes to pg_num (`pr#44541 <https://github.com/ceph/ceph/pull/44541>`_, Sage Weil)
 * mirror snapshot schedule and trash purge schedule fixes (`pr#46777 <https://github.com/ceph/ceph/pull/46777>`_, Ilya Dryomov)
 * mon/MonCommands.h: fix target_size_ratio range (`pr#45398 <https://github.com/ceph/ceph/pull/45398>`_, Kamoltat)
