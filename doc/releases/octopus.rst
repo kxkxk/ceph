@@ -8,7 +8,7 @@ order of 8-limbed cephalopods.
 v15.2.17 Octopus
 ================
 
-This is the 17th backport release in the Octopus series. We recommend all
+This is the 17th and final backport release in the Octopus series. We recommend all
 users update to this release.
 
 Notable Changes
