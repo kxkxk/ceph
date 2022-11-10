@@ -2064,6 +2064,7 @@ static inline void rgw_cond_decode_objtags(
   }
 }
 
+// TODO: add support to mutisite
 void RGWGetObj::execute(optional_yield y)
 {
   bufferlist bl;
@@ -2343,10 +2344,19 @@ void RGWListBuckets::execute(optional_yield y)
       policies_stats.emplace(policy.second.name,
                              decltype(policies_stats)::mapped_type());
     }
-
+    
     std::map<std::string, std::unique_ptr<rgw::sal::RGWBucket>>& m = buckets.get_buckets();
     for (const auto& kv : m) {
       const auto& bucket = kv.second;
+
+      op_ret = bucket->get_bucket_info(this, y);
+      if (op_ret < 0) {
+        ldpp_dout(this, 0) << "ERROR:; failed to get bucket info, bucket is " << bucket->get_name() << dendl;
+        return;
+      }
+      // if (bucket->get_info().zone == "") {
+      //   bucket->get_info().set_zone("ssss1");
+      // }
 
       global_stats.bytes_used += bucket->get_size();
       global_stats.bytes_used_rounded += bucket->get_size_rounded();
@@ -2888,6 +2898,10 @@ int RGWCreateBucket::verify_permission(optional_yield y)
       return op_ret;
     }
 
+    if (buckets.get_buckets().find(bucket.name) != buckets.get_buckets().end()) {
+      return -EEXIST;
+    }
+
     if ((int)buckets.count() >= s->user->get_max_buckets()) {
       return -ERR_TOO_MANY_BUCKETS;
     }
@@ -3130,14 +3144,23 @@ void RGWCreateBucket::execute(optional_yield y)
   s->bucket_owner.set_name(s->user->get_display_name());
 
   string zonegroup_id;
+  string zone;
 
   if (s->system_request) {
-    zonegroup_id = s->info.args.get(RGW_SYS_PARAM_PREFIX "zonegroup");
+    zonegroup_id = s->info.args.sys_get(RGW_SYS_PARAM_PREFIX "zonegroup");
+    zone = s->info.args.sys_get(RGW_SYS_PARAM_PREFIX "zone");
     if (zonegroup_id.empty()) {
       zonegroup_id = store->get_zonegroup().get_id();
     }
+    if (zone.empty()) {
+      // s->info.args.append(RGW_SYS_PARAM_PREFIX "zone", store->svc()->zone->get_zone_params().get_name());
+      info.set_zone(store->svc()->zone->get_zone_params().get_name());
+    }
   } else {
     zonegroup_id = store->get_zonegroup().get_id();
+    /* add zone info to bucket*/
+    info.set_zone(store->svc()->zone->get_zone_params().get_name());
+    s->info.args.append(RGW_SYS_PARAM_PREFIX "zone", store->svc()->zone->get_zone_params().get_name());
   }
 
   /* Encode special metadata first as we're using std::map::emplace under
@@ -3184,7 +3207,6 @@ void RGWCreateBucket::execute(optional_yield y)
     info.swift_ver_location = *swift_ver_location;
     info.swift_versioning = (! swift_ver_location->empty());
   }
-
   /* We're replacing bucket with the newly created one */
   ldpp_dout(this, 10) << "user=" << s->user << " bucket=" << tmp_bucket << dendl;
   op_ret = store->create_bucket(this, *s->user, tmp_bucket, zonegroup_id,

@@ -996,6 +996,7 @@ struct RGWBucketInfo {
   rgw_user owner;
   uint32_t flags{0};
   string zonegroup;
+  string zone;
   ceph::real_time creation_time;
   rgw_placement_rule placement_rule;
   bool has_instance_obj{false};
@@ -1031,6 +1032,7 @@ struct RGWBucketInfo {
 
   std::optional<rgw_sync_policy_info> sync_policy;
 
+
   void encode(bufferlist& bl) const;
   void decode(bufferlist::const_iterator& bl);
 
@@ -1054,7 +1056,7 @@ struct RGWBucketInfo {
   void set_sync_policy(rgw_sync_policy_info&& policy);
 
   bool empty_sync_policy() const;
-
+  void set_zone(string szone) { zone = szone; }
   RGWBucketInfo();
   ~RGWBucketInfo();
 };

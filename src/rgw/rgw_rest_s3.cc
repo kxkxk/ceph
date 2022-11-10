@@ -89,6 +89,8 @@ void dump_bucket(struct req_state *s, rgw::sal::RGWBucket& obj)
 {
   s->formatter->open_object_section("Bucket");
   s->formatter->dump_string("Name", obj.get_name());
+  s->formatter->dump_string("zoneGroup", obj.get_info().zonegroup );
+  s->formatter->dump_string("zone", obj.get_info().zone );
   dump_time(s, "CreationDate", &obj.get_creation_time());
   s->formatter->close_section();
 }
