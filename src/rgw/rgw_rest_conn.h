@@ -106,6 +106,7 @@ public:
   size_t get_endpoint_count() const { return endpoints.size(); }
 
   virtual void populate_params(param_vec_t& params, const rgw_user *uid, const string& zonegroup);
+  virtual void populate_params_v2(param_vec_t& params, const rgw_user *uid, const string& zonegroup, const string& zone);
 
   /* sync request */
   int forward(const DoutPrefixProvider *dpp, const rgw_user& uid, req_info& info, obj_version *objv, size_t max_response, bufferlist *inbl, bufferlist *outbl, optional_yield y);
@@ -189,6 +190,11 @@ private:
       if (!uid->empty()){
         params.push_back(param_pair_t(RGW_SYS_PARAM_PREFIX "uid", uid_str));
       }
+    }
+  }
+  void populate_zone(param_vec_t& params, const string& zone) {
+    if (!zone.empty()) {
+      params.push_back(param_pair_t(RGW_SYS_PARAM_PREFIX "zone", zone));
     }
   }
 };

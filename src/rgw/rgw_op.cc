@@ -3149,6 +3149,7 @@ void RGWCreateBucket::execute(optional_yield y)
   if (s->system_request) {
     zonegroup_id = s->info.args.sys_get(RGW_SYS_PARAM_PREFIX "zonegroup");
     zone = s->info.args.sys_get(RGW_SYS_PARAM_PREFIX "zone");
+    info.set_zone(zone);
     if (zonegroup_id.empty()) {
       zonegroup_id = store->get_zonegroup().get_id();
     }

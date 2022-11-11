@@ -86,6 +86,13 @@ void RGWRESTConn::populate_params(param_vec_t& params, const rgw_user *uid, cons
   populate_zonegroup(params, zonegroup);
 }
 
+void RGWRESTConn::populate_params_v2(param_vec_t& params, const rgw_user *uid, const string& zonegroup, const string& zone) 
+{
+  populate_uid(params, uid);
+  populate_zonegroup(params, zonegroup);
+  populate_zone(params, zone);
+}
+
 int RGWRESTConn::forward(const DoutPrefixProvider *dpp, const rgw_user& uid, req_info& info, obj_version *objv, size_t max_response, bufferlist *inbl, bufferlist *outbl, optional_yield y)
 {
   string url;
@@ -93,7 +100,12 @@ int RGWRESTConn::forward(const DoutPrefixProvider *dpp, const rgw_user& uid, req
   if (ret < 0)
     return ret;
   param_vec_t params;
-  populate_params(params, &uid, self_zone_group);
+  string zone = info.args.sys_get(RGW_SYS_PARAM_PREFIX "zone");
+  if (zone != "") {
+    populate_params_v2(params, &uid, self_zone_group, zone);
+  } else {
+    populate_params(params, &uid, self_zone_group);
+  }
   if (objv) {
     params.push_back(param_pair_t(RGW_SYS_PARAM_PREFIX "tag", objv->tag));
     char buf[16];
