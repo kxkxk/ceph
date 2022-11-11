@@ -1070,6 +1070,8 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
     bucket->set_attrs(attrs);
   }
 
+  std::string zone_name = info.zone;
+
   if (!svc()->zone->is_meta_master()) {
     JSONParser jp;
     ret = forward_request_to_master(dpp, &u, NULL, in_data, &jp, req_info, y);
@@ -1101,6 +1103,8 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
   if (zid.empty()) {
     zid = svc()->zone->get_zonegroup().get_id();
   }
+  
+  std::string zone_name = info.zone;
 
   if (*existed) {
     rgw_placement_rule selected_placement_rule;

@@ -780,6 +780,7 @@ void RGWBucketInfo::dump(Formatter *f) const
   encode_json("owner", owner.to_str(), f);
   encode_json("flags", flags, f);
   encode_json("zonegroup", zonegroup, f);
+  encode_json("zone", zone, f);
   encode_json("placement_rule", placement_rule, f);
   encode_json("has_instance_obj", has_instance_obj, f);
   encode_json("quota", quota, f);
@@ -809,6 +810,7 @@ void RGWBucketInfo::decode_json(JSONObj *obj) {
   JSONDecoder::decode_json("owner", owner, obj);
   JSONDecoder::decode_json("flags", flags, obj);
   JSONDecoder::decode_json("zonegroup", zonegroup, obj);
+  JSONDecoder::decode_json("zone", zone, obj);
   /* backward compatability with region */
   if (zonegroup.empty()) {
     JSONDecoder::decode_json("region", zonegroup, obj);
