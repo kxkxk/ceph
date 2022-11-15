@@ -1345,6 +1345,7 @@ static int bucket_stats(rgw::sal::RGWRadosStore *store,
 		      bucket_info.layout.current_index.layout.normal.num_shards);
   formatter->dump_string("tenant", bucket.tenant);
   formatter->dump_string("zonegroup", bucket_info.zonegroup);
+  formatter->dump_string("zone", bucket_info.zone);
   formatter->dump_string("placement_rule", bucket_info.placement_rule.to_str());
   ::encode_json("explicit_placement", bucket.explicit_placement, formatter);
   formatter->dump_string("id", bucket.bucket_id);

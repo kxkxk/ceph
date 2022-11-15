@@ -810,11 +810,11 @@ void RGWBucketInfo::decode_json(JSONObj *obj) {
   JSONDecoder::decode_json("owner", owner, obj);
   JSONDecoder::decode_json("flags", flags, obj);
   JSONDecoder::decode_json("zonegroup", zonegroup, obj);
-  JSONDecoder::decode_json("zone", zone, obj);
   /* backward compatability with region */
   if (zonegroup.empty()) {
     JSONDecoder::decode_json("region", zonegroup, obj);
   }
+  JSONDecoder::decode_json("zone", zone, obj);
   string pr;
   JSONDecoder::decode_json("placement_rule", pr, obj);
   placement_rule.from_str(pr);

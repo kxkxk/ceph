@@ -1069,8 +1069,8 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
     *existed = false;
     bucket->set_attrs(attrs);
   }
-
-  std::string zone_name = info.zone;
+  
+  // string zone_name = info.zone;
 
   if (!svc()->zone->is_meta_master()) {
     JSONParser jp;
@@ -1103,8 +1103,6 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
   if (zid.empty()) {
     zid = svc()->zone->get_zonegroup().get_id();
   }
-  
-  std::string zone_name = info.zone;
 
   if (*existed) {
     rgw_placement_rule selected_placement_rule;
@@ -1117,7 +1115,6 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
       return ret;
     }
   } else {
-
     ret = getRados()->create_bucket(u.get_info(), bucket->get_key(),
 				    zid, placement_rule, swift_ver_location,
 				    pquota_info, attrs,
@@ -1130,7 +1127,7 @@ int RGWRadosStore::create_bucket(const DoutPrefixProvider *dpp,
       return ret;
     }
   }
-
+  // info.set_zone(zone_name);
   bucket->set_version(ep_objv);
   bucket->get_info() = info;
 
